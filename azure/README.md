@@ -1,0 +1,1 @@
+Azure Gallery meta stuff
