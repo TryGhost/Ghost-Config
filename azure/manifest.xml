@@ -1,0 +1,4 @@
+<MSDeploy.iisApp>
+  <iisapp path="Ghost" />
+  <setAcl path="Ghost/content" setAclAccess="Modify" />
+</MSDeploy.iisApp>
