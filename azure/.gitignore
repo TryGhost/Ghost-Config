@@ -1,0 +1,4 @@
+Ghost/*
+!Ghost/config.js
+!Ghost/iisnode.yml
+!Ghost/web.config
