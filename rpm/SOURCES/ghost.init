@@ -1,0 +1,92 @@
+#!/bin/sh
+#
+# Ghost - This script takes care of starting and stopping the
+#         ghost blogging application
+#
+# chkconfig:   - 80 20
+# description: Ghost is just a blogging platform
+
+### BEGIN INIT INFO
+# Provides: ghost
+# Required-Start: $local_fs $network 
+# Required-Stop: $local_fs $network
+# Default-Stop: 0 1 6
+# Short-Description: Ghost is just a blogging platform
+# Description: Ghost is an Open Source application which allows you to write
+#              and publish your own blog, giving you the tools to make it easy
+#              and even fun to do. It's simple, elegant, and designed so that
+#              you can spend less time making your blog work and more time
+#              blogging.
+### END INIT INFO
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+prog="ghost"
+
+[ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
+
+[ -z "$NODE_ENV" ] && NODE_ENV="production"
+
+lockfile=/var/lock/subsys/$prog
+pidfile="/var/run/${prog}.pid"
+
+start() {
+    echo -n "Starting $prog: "
+    umask 0007
+    daemonize -a -u ghost \
+      -E NODE_ENV=$NODE_ENV \
+      -o /var/log/ghost/standard.log -e /var/log/ghost/error.log \
+      -l /var/run/ghost.lock -p /var/run/ghost.pid \
+      -c /usr/share/ghost \
+      -- /usr/bin/node /usr/share/ghost/index.js
+    if [ $? -eq 0 ]; then
+      echo_success && echo
+    else
+      echo_failure && echo
+    fi
+    return $retval
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc $prog
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && rm -f $lockfile
+    return $retval
+}
+
+restart() {
+    stop
+    start
+}
+
+case "$1" in
+    start|stop|restart)
+        $1
+        ;;
+    force-reload)
+        restart
+        ;;
+    status)
+        status $prog
+        ;;
+    try-restart|condrestart)
+        if status $prog >/dev/null ; then
+            restart
+        fi
+	;;
+    reload)
+        # If config can be reloaded without restarting, implement it here,
+        # remove the "exit", and add "reload" to the usage message below.
+        # For example:
+        # status $prog >/dev/null || exit 7
+        # killproc $prog -HUP
+        action $"Service ${0##*/} does not support the reload action: " /bin/false
+        exit 3
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|status|restart|try-restart|force-reload}"
+        exit 2
+esac
