@@ -14,12 +14,12 @@ config = {
         // Visit http://docs.ghost.org/mail for instructions
 
         mail: {
-            transport: 'PlaceholderForEmailTransport',
+            transport: 'PlaceholderForTransport',
             options: {
-                service: 'PlaceholderForEmailService',
+                service: 'PlaceholderForService',
                 auth: {
-                    user: 'PlaceholderForEmailServiceUser', // mailgun username
-                    pass: 'PlaceholderForEmailServicePassword'  // mailgun password
+                    user: 'PlaceholderForUser', // mailgun username
+                    pass: 'PlaceholderForPassword'  // mailgun password
                 }
             }
         },
@@ -46,12 +46,12 @@ config = {
     production: {
         url: 'PlaceholderForUrl',
         mail: {
-            transport: 'PlaceholderForEmailTransport',
+            transport: 'PlaceholderForTransport',
             options: {
-                service: 'PlaceholderForEmailService',
+                service: 'PlaceholderForService',
                 auth: {
-                    user: 'PlaceholderForEmailServiceUser', // mailgun username
-                    pass: 'PlaceholderForEmailServicePassword'  // mailgun password
+                    user: 'PlaceholderForUser', // mailgun username
+                    pass: 'PlaceholderForPassword'  // mailgun password
                 }
             }
         },
