@@ -1,0 +1,7 @@
+/var/log/ghost/*.log {
+  copytruncate
+  missingok
+  weekly
+  notifempty
+  nocompress
+}
