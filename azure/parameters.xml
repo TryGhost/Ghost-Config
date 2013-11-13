@@ -9,18 +9,18 @@
     <parameterEntry type="TextFile" scope="config.js" match="PlaceholderForUrl" />
   </parameter>
   <parameter name="Transport" friendlyName="Email Transport" description="The email transport that Ghost should use." defaultValue="SMTP">
-    <parameterEntry type="TextFile" scope="config.js" match="PlaceholderForEmailTransport" />
+    <parameterEntry type="TextFile" scope="config.js" match="PlaceholderForTransport" />
   </parameter>
   <parameter name="ServiceName" friendlyName="Email Service" description="The name of the email service that Ghost should use.">
     <parameterValidation type="AllowEmpty" />
-    <parameterEntry type="TextFile" scope="config.js" match="PlaceholderForEmailService" />
+    <parameterEntry type="TextFile" scope="config.js" match="PlaceholderForService" />
   </parameter>
   <parameter name="ServiceUser" friendlyName="Email Service User" description="The user of the email service.">
     <parameterValidation type="AllowEmpty" />
-    <parameterEntry type="TextFile" scope="config.js" match="PlaceholderForEmailServiceUser" />
+    <parameterEntry type="TextFile" scope="config.js" match="PlaceholderForUser" />
   </parameter>
   <parameter name="ServicePassword" friendlyName="Email Service Password" description="The password for the user of the email service." tags="Password, NoStore">
     <parameterValidation type="AllowEmpty" />
-    <parameterEntry type="TextFile" scope="config.js" match="PlaceholderForEmailServicePassword" />
+    <parameterEntry type="TextFile" scope="config.js" match="PlaceholderForPassword" />
   </parameter>
 </parameters>

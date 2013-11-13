@@ -5,25 +5,25 @@
       <Title>Ghost</Title>
       <Description>Ghost is an Open Source application which allows you to write and publish your own blog, giving you the tools to make it easy and even fun to do.  It's simple, elegant, and designed so that you can spend less time making your blog work and more time blogging.</Description>
       <Uri>http://ghost.org/</Uri>
-      <ImageUri>https://1.gravatar.com/avatar/238913f75ec6bb96e5a02f96ac50c9d8</ImageUri>
+      <ImageUri>https://gravatar.com/avatar/238913f75ec6bb96e5a02f96ac50c9d8</ImageUri>
     </AddLink>
     <AddLink InDashboard="True" InLearn="True">
       <Title>Ghost Guide</Title>
       <Description>Everything you need to know to set up a blog with Ghost.</Description>
       <Uri>http://docs.ghost.org</Uri>
-      <ImageUri>https://1.gravatar.com/avatar/238913f75ec6bb96e5a02f96ac50c9d8</ImageUri>
+      <ImageUri>https://gravatar.com/avatar/238913f75ec6bb96e5a02f96ac50c9d8</ImageUri>
     </AddLink>
     <AddLink InDashboard="True" InLearn="True">
       <Title>Ghost Forum</Title>
       <Description>The Ghost Blogging Support Forum.</Description>
       <Uri>http://ghost.org/forum</Uri>
-      <ImageUri>https://1.gravatar.com/avatar/238913f75ec6bb96e5a02f96ac50c9d8</ImageUri>
+      <ImageUri>https://gravatar.com/avatar/238913f75ec6bb96e5a02f96ac50c9d8</ImageUri>
     </AddLink>
     <AddLink InDashboard="True" InLearn="True">
       <Title>Ghost Marketplace</Title>
       <Description>Themes available for the Ghost blogging platform.</Description>
       <Uri>http://marketplace.ghost.org/</Uri>
-      <ImageUri>https://1.gravatar.com/avatar/238913f75ec6bb96e5a02f96ac50c9d8</ImageUri>
+      <ImageUri>https://gravatar.com/avatar/238913f75ec6bb96e5a02f96ac50c9d8</ImageUri>
     </AddLink>
   </Links>
 </WebPlatform>
