@@ -9,7 +9,7 @@ Submission to the Azure App Gallery requires _all_ of the Ghost module dependenc
 
 ### Publish Instructions
 
-Note that this package is not only intended to target Azure, but all Windows PCs in general - it has to handle 32 and 64-bit Windows architecture.  It is recommended that you build this package with a Windows machine.
+Note that this package is not only intended to target Azure, but all Windows PCs in general - it has to handle 32 and 64-bit Windows architecture.  It is required that you build this package with a 64-bit Windows machine.
 
 #### Getting Ghost Ready
 
@@ -18,7 +18,7 @@ First, checkout the Ghost tag you wish to target for the Azure Gallery publish.
 1. Install Grunt `npm install -g grunt-cli`
 2. Install Ghost dependencies `npm install`
 
-Things get a little goofy here as we must have SQLite bindings for both the 32 and 64-bit Windows architecture.
+Things get a little goofy here as we must have `node-sqlite3` bindings for both the 32 and 64-bit Windows architecture.  `node-sqlite3` will build the [bindings](https://github.com/mapbox/node-sqlite3/wiki/Binaries) using the system architecture and version of node that you're running the install from.  So, this will require 64-bit Windows and 64-bit Node with a version of 0.10*.
 
 3. Force install the 32 bit version of [`node-sqlite3`](https://github.com/mapbox/node-sqlite3) with `npm install sqlite3 --target_arch=ia32` and copy `\node_modules\sqlite3\lib\binding\Release\node-v11-win32-ia32` off to the side.
 4. Force install the 64 bit version of [`node-sqlite3`](https://github.com/mapbox/node-sqlite3) with `npm install sqlite3 --target_arch=x64` and copy the 32 bit version, that you put off to the side, back into `\node_modules\sqlite3\lib\binding\Release\`.
@@ -37,7 +37,7 @@ Finish off the build with a couple of `grunt` tasks.
 #### Zip File Structure Example
 
 <pre>
-GhostPackage.zip  
+Ghost.zip  
 |-- manifest.xml  
 |-- parameters.xml
 |-- TBEX.xml  
