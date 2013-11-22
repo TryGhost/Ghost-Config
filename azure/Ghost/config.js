@@ -14,7 +14,7 @@ config = {
         // Visit http://docs.ghost.org/mail for instructions
 
         mail: {
-            transport: 'PlaceholderForTransport',
+            transport: 'SMTP',
             options: {
                 service: 'PlaceholderForService',
                 auth: {
@@ -46,7 +46,7 @@ config = {
     production: {
         url: 'PlaceholderForUrl',
         mail: {
-            transport: 'PlaceholderForTransport',
+            transport: 'SMTP',
             options: {
                 service: 'PlaceholderForService',
                 auth: {
