@@ -14,7 +14,11 @@ LICENSE=		MIT
 
 RUN_DEPENDS=	node:${PORTSDIR}/www/node
 BUILD_DEPENDS=	${RUN_DEPENDS} \
-				npm:${PORTSDIR}/www/npm
+			npm:${PORTSDIR}/www/npm
+
+# TODO: get a new user into the GIDs file
+USERS=		www
+GROUPS=		www
 
 USE_ZIP=		yes
 NO_BUILD=		yes
@@ -39,7 +43,10 @@ do-extract:
 
 pre-install:
 	cd ${WRKSRC} && npm install --sqlite=${PREFIX}
-	${ECHO_CMD} "@mode 755" >> ${PLIST}; ${ECHO_CMD} "@comment files" >> ${PLIST}
+	${ECHO_CMD} "@mode 755" >> ${PLIST}
+	${ECHO_CMD} "@owner ${USERS}" >> ${PLIST}
+	${ECHO_CMD} "@group ${GROUPS}" >> ${PLIST}
+	${ECHO_CMD} "@comment files" >> ${PLIST}
 	cd ${WRKSRC}; ${FIND} . -type f | cut -c2- \
 		| ${SED} 's|^|www/ghost|' \
 		| ${SORT} -r >> ${PLIST}
@@ -48,6 +55,8 @@ pre-install:
 		| ${SED} 's|^|@dirrm www/ghost|' \
 		| ${SORT} -r >> ${PLIST}
 	${ECHO_CMD} "@mode" >> ${PLIST}
+	${ECHO_CMD} "@owner" >> ${PLIST}
+	${ECHO_CMD} "@group" >> ${PLIST}
 
 do-install:
 	${MKDIR} ${STAGEDIR}${WWWDIR}
