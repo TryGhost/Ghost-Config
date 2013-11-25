@@ -8,7 +8,8 @@
   <parameter name="Url" friendlyName="Ghost URL" description="The URL where Ghost will be hosted." defaultValue="http://my-ghost-blog.com" tags="AppURL">
     <parameterEntry type="TextFile" scope="config.js" match="PlaceholderForUrl" />
   </parameter>
-  <parameter name="Email Service Name" friendlyName="Email Service" description="The name of the email service that Ghost should use.  (I.e. Gmail, Mailgun, Sendgrid)">
+  <parameter name="Email Service Name" friendlyName="Email Service" description="The email service that Ghost should use.">
+    <parameterValidation type="Enumeration" validationString="Gmail,Mailgun,SendGrid,Postmark" />
     <parameterEntry type="TextFile" scope="config.js" match="PlaceholderForService" />
   </parameter>
   <parameter name="Email Service User" friendlyName="Email Service User" description="The user of the email service.">
