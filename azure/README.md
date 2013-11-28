@@ -56,3 +56,9 @@ Ghost.zip
 |   |-- package.json
 |   |-- rest of teh codez, filez, etc.
 </pre>
+
+## References
+
+[Testing for Windows Azure App Gallery](http://blogs.msdn.com/b/azureappgallery/archive/2013/03/22/tips-for-a-successful-submission-to-windows-azure-app-gallery.aspx)  
+[Testing for WebMatrix and Web PI](http://www.iis.net/learn/develop/windows-web-application-gallery/testing-a-web-application-zip-package-for-inclusion-with-the-web-application-gallery)  
+[Submitting to Azure/Web App Gallery](http://blogs.msdn.com/b/azureappgallery/archive/2013/04/24/how-to-submit-an-application-to-web-app-gallery.aspx)  
