@@ -1,5 +1,2 @@
-rpm/SRPMS/*
-rpm/RPMS/*
-rpm/SOURCES/*.zip
-rpm/BUILD/*
-rpm/BUILDROOT/*
+rpm/sources/*.zip
+rpm/yum
