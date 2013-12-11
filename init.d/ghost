@@ -48,7 +48,7 @@ do_start()
     # Set up folder structure
     mkdir -p /var/opt/ghost
     mkdir -p /var/opt/ghost/run
-    chown -R ghost:ghost /var/opt/ghost
+    chown -R ${GHOST_USER}:${GHOST_GROUP} /var/opt/ghost
     # Return
     #   0 if daemon has been started
     #   1 if daemon was already running
