@@ -1,0 +1,17 @@
+[Unit]
+Description=ghost
+After=network.target
+
+[Service]
+Type=simple
+# Edit WorkingDirectory, User and Group as needed
+WorkingDirectory=/path/to/Ghost
+User=http
+Group=http
+ExecStart=/usr/bin/npm start --production
+ExecStop=/usr/bin/npm stop --production
+Restart=always
+SyslogIdentifier=Ghost
+
+[Install]
+WantedBy=multi-user.target
