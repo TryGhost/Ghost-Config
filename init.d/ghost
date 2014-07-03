@@ -20,7 +20,7 @@ GHOST_GROUP=ghost
 GHOST_USER=ghost
 DAEMON=/usr/bin/node
 DAEMON_ARGS="$GHOST_ROOT/index.js"
-PIDFILE=/var/opt/ghost/run/$NAME.pid
+PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 export NODE_ENV=production
 
@@ -45,10 +45,6 @@ VERBOSE=yes
 #
 do_start()
 {
-    # Set up folder structure
-    mkdir -p /var/opt/ghost
-    mkdir -p /var/opt/ghost/run
-    chown -R ${GHOST_USER}:${GHOST_GROUP} /var/opt/ghost
     # Return
     #   0 if daemon has been started
     #   1 if daemon was already running
@@ -59,7 +55,7 @@ do_start()
         || return 1
     start-stop-daemon --start --quiet \
         --chuid $GHOST_USER:$GHOST_GROUP --chdir $GHOST_ROOT --background \
-        --pidfile $PIDFILE --exec $DAEMON -- $DAEMON_ARGS \
+        --make-pidfile --pidfile $PIDFILE --exec $DAEMON -- $DAEMON_ARGS \
         || return 2
     # Add code here, if necessary, that waits for the process to be ready
     # to handle requests from services started subsequently which depend
@@ -77,7 +73,7 @@ do_stop()
     #   2 if daemon could not be stopped
     #   other if a failure occurred
     start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 \
-        --pidfile $PIDFILE --name $NAME
+        --pidfile $PIDFILE --exec $DAEMON
     RETVAL="$?"
     [ "$RETVAL" = 2 ] && return 2
     # Wait for children to finish too if this is a daemon that forks
@@ -104,7 +100,7 @@ do_reload() {
     # then implement that here.
     #
     start-stop-daemon --stop --signal 1 --quiet --pidfile $PIDFILE \
-        --name $NAME
+        --exec $DAEMON
     return 0
 }
 
@@ -146,7 +142,6 @@ restart|force-reload)
         do_stop
         case "$?" in
         0|1)
-                do_start
                 do_start
                 case "$?" in
                         0) log_end_msg 0 ;;
