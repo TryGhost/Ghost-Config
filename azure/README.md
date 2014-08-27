@@ -2,76 +2,54 @@
 
 This package contains configuration files that are required to submit Ghost as a package to the [Azure App Gallery](http://www.microsoft.com/web/gallery/developer.aspx).
 
+The Azure package for Ghost should be:
+
+- Configured optimally for Azure.
+- Secure out-of-the-box.
+
 ## Getting Started
 
-Submission to the Azure App Gallery requires _all_ of the Ghost module dependencies - this includes `node_modules`.  Prior to getting started, please review the [Ghost installation instructions](https://github.com/TryGhost/Ghost/blob/master/CONTRIBUTING.md#installation--setup-instructions). It is not necessary to clone straight from GitHub, the packaged official ZIP file should be sufficient. This also keeps the number of files and the total file size down, since one can assume that all users who whish to have an active Git repo on their Azure Website would find cloning themselves to be more convenient. 
+Submission to the Azure App Gallery requires _all_ of the Ghost module dependencies. Prior to getting started, please review the [Ghost installation instructions](https://github.com/TryGhost/Ghost/blob/master/CONTRIBUTING.md#installation--setup-instructions) to setup a developer environment, e.g. Install Node.js.
 
 ### Publish Instructions
 
-Note that this package is not only intended to target Azure, but all Windows PCs in general - it has to handle 32 and 64-bit Windows architecture.  It is required that you build this package with a 64-bit Windows machine.
+Note that this package is not only intended to target Azure, but all Windows PCs in general - it has to handle 32 and 64-bit Windows architecture.  
 
-#### Ensure Azure compatibility
-
-First, ensure that the official 'vanilla' ZIP version runs smoothly on Azure. 
-
-1. Download the ZIP file
-2. Run 'npm install'
-3. Set up the config.js - Specifically, it is required that you replace ports with `process.env.PORT`.
-4. Upload via FTP or GIT to an Azure Website and confirm that Ghost performs as expected
+**NB:** It is required that you build this package with a 64-bit Windows machine.
 
 #### Creating a Web App Gallery Package
 
-A Windows Web App Package has essentially only two major components: The Ghost folder after `npm install` has been run and a set of three configuration files. 
+A Windows Web App Package has essentially only two major components: The Ghost folder after `npm install` has been run and a set of three configuration files.
+    
+1. Download the official *.zip release of Ghost from GitHub, [https://github.com/TryGhost/Ghost/releases](https://github.com/TryGhost/Ghost/releases "https://github.com/TryGhost/Ghost/releases"). The official releases are recommended as it includes the default Casper theme and has been compiled with `grunt --production`. 
+2. Open Powershell and execute the `Package.ps1` script, `.\Package.ps1 -GhostZip .\ghost-0.5.1.zip`. The Powershell script will:
+    - Extract the release to temporary directory.
+    - Install the module dependencies (`npm install`).
+    - Install both x32 and x64 bit versions of SQLite3.
+    - Copies the Azure configuration files from this repository.
+    - Copies the package meta-data.
+    - Finally creates a zip of the result and generates a SHA-1 hash that required to submit the package to Azure. 
 
-1. Download the ZIP version of the Ghost version you'd like to package up as a Windows Web App Package and run `npm install`. 
 
-2. Install `node-sqlite3` bindings for both the 32 and 64-bit Windows architecture. `node-sqlite3` will build the [bindings](https://github.com/mapbox/node-sqlite3/wiki/Binaries) using the system architecture and version of node that you're running the install from.  So, this will require 64-bit Windows and 64-bit Node with a version of 0.10*.
-	- Force install the 32 bit version of [`node-sqlite3`](https://github.com/mapbox/node-sqlite3) with `npm install sqlite3 --target_arch=ia32` and copy `\node_modules\sqlite3\lib\binding\Release\node-v11-win32-ia32` off to the side.
-	- Force install the 64 bit version of [`node-sqlite3`](https://github.com/mapbox/node-sqlite3) with `npm install sqlite3 --target_arch=x64` and copy the 32 bit version, that you put off to the side, back into `\node_modules\sqlite3\lib\binding\Release\`.
+#### Testing a Web App Gallery Package
 
-3. Copy the contents from the root Ghost build into the configuration sub-directory `\Ghost`.
-4. Ensure that there are no breaking changes to config.js and include config.js as included in this repo. There are two sets of changes required for this file:
-	- Set port values need to be replaced with `process.env.PORT`.
-	- Instead of promting the user to change config.js manually to include URL and email provider details, we can instruct Azure to display a dialog and change the file automatically. For this to work, config.js needs to have placeholder values.
-		* `url: 'PlaceholderForUrl'`
-    	*  
-                mail: {
-                    transport: 'SMTP',
-                    options: {
-                        service: 'PlaceholderForService',
-                        auth: {
-                            user: 'PlaceholderForUser', // mailgun username
-                            pass: 'PlaceholderForPassword'  // mailgun password
-                        }
-                    }
-                },
-5. Include `manifest.xml`, `parameters.xml`, `TBEX.xml` and `ThirdPartyLicense.txt` into the root of your package folder.
-6. ZIP all contents to match the file structure outlined below.
-7. Create a SHA-1 key of the ZIP file - it will be required during submission of the package to Azure. Windows doesn't have a built-in tool, but the the tiny & portable [MD5 & SHA Checksum Utility](http://raylin.wordpress.com/downloads/md5-sha-1-checksum-utility/) will help.
-8. [Test your package](http://www.iis.net/learn/develop/windows-web-application-gallery/package-an-application-for-the-windows-web-application-gallery) and submit.
+Deploy the package you have just created to Azure using Web Deploy. If you do not have a subscription to Azure, you can begin a trial. Remeber, if you have an [MSDN subscription](http://www.visualstudio.com/en-us/products/msdn-subscriptions-vs), one of the many benefits is monthly credit to spend on Azure. 
 
-#### Zip File Structure Example
+1. Open your Azure Portal and Quick Create an Web Site, New > Compute > Web Site > Quick Create.
+2. Once created, open the dashboard for the Web Site and download your Publishing Profile. 
+3. Take note of your the Web Site name, e.g. http://**website-name**.azurewebsites.net/ 
+4. Copy the `*.PublishSettings` to the local directory. 
+5. Open the `setparameters.xml` file and configure to your Azure Web Site. For example:
+        - Replace `ReplaceWithAzureWebsiteName` with the name of the Azure Web Site.
+        - Select one of the email providers. 
+        - Enter credentials for your email provider. If using Gmail, recommend creating a [App Specific Password for your Google Account](https://support.google.com/accounts/answer/185833).
+6. Open Powershell and execute the `Deploy.ps1` script, 
+        `.\Deploy.ps1 -SourcePublishSettings .\your-azure-website.PublishSettings -Package .\azure-ghost-0.5.1.zip -Parameters .\setparameters.xml -Launch`.
+7. Verify that it has deployed and Ghost performs as expected.
 
-<pre>
-Ghost.zip  
-|-- manifest.xml  
-|-- parameters.xml
-|-- TBEX.xml  
-|-- ThirdPartyLicense.txt  
-|-- Ghost  
-|   |-- content  
-|   |   `-- 
-|   |-- core
-|   |   `-- 
-|   |-- node_modules
-|   |   `-- 
-|   |-- config.js
-|   |-- iisnode.yml  
-|   |-- web.config  
-|   |-- index.js
-|   |-- package.json
-|   |-- rest of teh codez, filez, etc.
-</pre>
+#### Submit the update to Azure Gallery
+
+As this is an update to the existing package on Azure, you need to reach out to the previous submitters of the package to ask them to submit an update on your behalf or ask for co-ownership.
 
 ## References
 
