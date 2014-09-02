@@ -1,5 +1,6 @@
 // # Ghost Configuration
 // Setup your Ghost install for various environments
+// Documentation can be found at http://support.ghost.org/config/
 
 var path = require('path'),
     config;
@@ -8,22 +9,20 @@ config = {
     // ### Development **(default)**
     development: {
         // The url to use when providing links to the site, E.g. in RSS and email.
-        url: 'PlaceholderForUrl',
+        url: 'AzureGhostUrl',
 
-        // Example mail config
-        // Visit http://docs.ghost.org/mail for instructions
-
+        // Mail config
+        // Visit http://support.ghost.org/mail for instructions
         mail: {
             transport: 'SMTP',
             options: {
-                service: 'PlaceholderForService',
+                service: 'EmailServiceName',
                 auth: {
-                    user: 'PlaceholderForUser', // mailgun username
-                    pass: 'PlaceholderForPassword'  // mailgun password
+                    user: 'EmailServiceUser',
+                    pass: 'EmailServicePassword'
                 }
             }
         },
-
 
         database: {
             client: 'sqlite3',
@@ -37,21 +36,25 @@ config = {
             host: '127.0.0.1',
             // Port to be passed to node's `net.Server#listen()`, for iisnode set this to `process.env.PORT`
             port: process.env.PORT
-        }
+        },
+        paths: {
+            contentPath: path.join(__dirname, '/content/')
+        },
+        forceAdminSSL: false // causes a redirect-loop on azure, use urlrewrite instead
     },
 
     // ### Production
     // When running Ghost in the wild, use the production environment
     // Configure your URL and mail settings here
     production: {
-        url: 'PlaceholderForUrl',
+        url: 'AzureGhostUrl',
         mail: {
             transport: 'SMTP',
             options: {
-                service: 'PlaceholderForService',
+                service: 'EmailServiceName',
                 auth: {
-                    user: 'PlaceholderForUser', // mailgun username
-                    pass: 'PlaceholderForPassword'  // mailgun password
+                    user: 'EmailServiceUser',
+                    pass: 'EmailServicePassword'
                 }
             }
         },
@@ -67,7 +70,8 @@ config = {
             host: '127.0.0.1',
             // Port to be passed to node's `net.Server#listen()`, for iisnode set this to `process.env.PORT`
             port: process.env.PORT
-        }
+        },
+        forceAdminSSL: false // causes a redirect-loop on azure, use urlrewrite instead
     },
 
     // **Developers only need to edit below here**
@@ -86,43 +90,50 @@ config = {
         server: {
             host: '127.0.0.1',
             port: '2369'
-        }
-    },
-
-    // ### Travis
-    // Automated testing run through GitHub
-    'travis-sqlite3': {
-        url: 'http://127.0.0.1:2369',
-        database: {
-            client: 'sqlite3',
-            connection: {
-                filename: path.join(__dirname, '/content/data/ghost-travis.db')
-            }
         },
-        server: {
-            host: '127.0.0.1',
-            port: '2369'
-        }
+        logging: false
     },
 
-    // ### Travis
-    // Automated testing run through GitHub
-    'travis-mysql': {
+    // ### Testing MySQL
+    // Used by Travis - Automated testing run through GitHub
+    'testing-mysql': {
         url: 'http://127.0.0.1:2369',
         database: {
             client: 'mysql',
             connection: {
                 host     : '127.0.0.1',
-                user     : 'travis',
+                user     : 'root',
                 password : '',
-                database : 'ghost_travis',
+                database : 'ghost_testing',
                 charset  : 'utf8'
             }
         },
         server: {
             host: '127.0.0.1',
             port: '2369'
-        }
+        },
+        logging: false
+    },
+
+    // ### Testing pg
+    // Used by Travis - Automated testing run through GitHub
+    'testing-pg': {
+        url: 'http://127.0.0.1:2369',
+        database: {
+            client: 'pg',
+            connection: {
+                host     : '127.0.0.1',
+                user     : 'postgres',
+                password : '',
+                database : 'ghost_testing',
+                charset  : 'utf8'
+            }
+        },
+        server: {
+            host: '127.0.0.1',
+            port: '2369'
+        },
+        logging: false
     }
 };
 

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="AppPath" value="ReplaceWithAzureWebsiteName" />
+  <setParameter name="Url" value="http://ReplaceWithAzureWebsiteName.azurewebsites.net/" />
+  <setParameter name="EmailServiceName" value="Gmail|Mailgun|SendGrid|Postmark" />
+  <setParameter name="EmailServiceUser" value="ReplaceWithEmailServiceUser" />
+  <setParameter name="EmailServicePassword" value="ReplaceWithEmailServicePassword" />
+</parameters>
