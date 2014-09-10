@@ -21,24 +21,22 @@ param (
 $ErrorActionPreference = "Stop"
 trap
 {
+    Pop-Location
     $Host.UI.WriteErrorLine($_)
     Exit 1
 }
 
 # Set verbosity
-if ($PSBoundParameters.Verbose -eq $true)
-{
+$verbose = ($PSBoundParameters.Verbose -eq $true)
+if ($verbose) {
     $VerbosePreference = "Continue"
 }
 
 # Set debug
-if ($PSBoundParameters.Debug -eq $true)
-{
+$debug = ($PSBoundParameters.Debug -eq $true)
+if ($debug) {
     $DebugPreference = "Continue"
 }
-
-# Change encoding to UTF8
-[System.Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 function Expand-Zip {
     param (
@@ -71,8 +69,15 @@ function Compress-Zip {
         [string]$ArchiveFile
     )
 
-    [System.Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem') | Out-Null
-    [System.IO.Compression.ZipFile]::CreateFromDirectory((Resolve-Path $Source), $ArchiveFile)
+    # If there is a problem loading the DLL, open the file properties and click 'Unblock'
+    Push-Location $PSScriptRoot
+        [System.Reflection.Assembly]::LoadFrom((Resolve-Path .\Ionic.Zip.Reduced.dll)) | Out-Null
+    Pop-Location
+
+    $zipFile = New-Object Ionic.Zip.ZipFile
+    $zipFile.AddDirectory($Source)
+    $zipFile.Save($ArchiveFile)
+    $zipFile.Dispose()
 }
 
 function Get-SHA1Hash {
@@ -89,7 +94,7 @@ function Get-SHA1Hash {
     try {
         $file = [System.IO.File]::Open($Filename, "open", "read")
         [Reflection.Assembly]::LoadWithPartialName("System.Security") | Out-Null
-        (new-object System.Security.Cryptography.SHA1Managed).ComputeHash($file) | %{ $result = $result + $_.ToString("x2") }
+        (New-Object System.Security.Cryptography.SHA1Managed).ComputeHash($file) | %{ $result = $result + $_.ToString("x2") }
     } finally {
         if ($file -ne $null) {
             $file.Dispose()
@@ -110,11 +115,21 @@ function New-TemporaryLocation {
     return $location
 }
 
+function ConvertFrom-Utf8 {
+    if ([string]::IsNullOrEmpty($_)) {
+        return
+    }
+
+    return ($_ -replace '[^\u0000-\u007F]','')
+}
+
 $packageRoot = New-TemporaryLocation
 $ghostInstallation = Join-Path $packageRoot "Ghost"
 
-# Open location that we are packaging
-Invoke-Item $packageRoot
+if ($debug) {
+    # Open location that we are packaging
+    Invoke-Item $packageRoot
+}
 
 # Unpack the Ghost installation to a temporary directory
 Write-Output "Expanding $GhostZip to $ghostInstallation"
@@ -127,19 +142,19 @@ Push-Location $ghostInstallation
 
     # Install Node Modules
     Write-Output "Installing Node Modules"
-    & npm install --production | %{ Write-Verbose "$_" }
+    & npm install --production | %{ $_ | ConvertFrom-Utf8 | Write-Verbose }
 
     # Install node-sqlite3 bindings for both the 32 and 64-bit Windows architecture.
     # node-sqlite3 will build the bindings using the system architecture and version of node that you're running the install
 
     # Force install of the 32-bit version, then move the lib to temporary location
     Write-Output "Installing SQLite3 x32 Module"
-    & npm install sqlite3 --target_arch=ia32 | %{ Write-Verbose "$_" }
+    & npm install sqlite3 --target_arch=ia32 | %{ $_ | ConvertFrom-Utf8 | Write-Verbose }
     Move-Item ".\node_modules\sqlite3\lib\binding\node-v11-win32-ia32\" -Destination ".\temp"
 
     # Force install of the 64-bit version, then copy 32-bit back
     Write-Output "Installing SQLite3 x64 Module"
-    & npm install sqlite3 --target_arch=x64 | %{ Write-Verbose "$_" }
+    & npm install sqlite3 --target_arch=x64 | %{ $_ | ConvertFrom-Utf8 | Write-Verbose }
     Move-Item ".\temp" -Destination ".\node_modules\sqlite3\lib\binding\node-v11-win32-ia32\"
 
     $ErrorActionPreference = "Stop"
@@ -191,3 +206,8 @@ $ghostAzureZipHash | Set-Content -Path (Join-Path $PSScriptRoot "$(Get-ChildItem
 
 Write-Output "Packaged Ghost as $ghostAzureZip, SHA-1: $ghostAzureZipHash"
 Write-Host "SUCCESS" -ForegroundColor Green
+
+if (-not $debug) {
+    # Clean up, remove the temporary working directory
+    Remove-Item -Path $packageRoot -Recurse -Force | Out-Null
+}
