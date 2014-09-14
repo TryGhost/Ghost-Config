@@ -40,20 +40,11 @@ trap
     Exit 1
 }
 
-# Set verbosity
-if ($PSBoundParameters.Verbose -eq $true)
-{
-    $VerbosePreference = "Continue"
-}
-
 # Set debug
-if ($PSBoundParameters.Debug -eq $true)
-{
+$debug = ($PSBoundParameters.Debug -eq $true)
+if ($debug) {
     $DebugPreference = "Continue"
 }
-
-# Change encoding to UTF8
-[System.Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 function Get-WebDeployLocation {
     $installPath = (Get-ChildItem "HKLM:\SOFTWARE\Microsoft\IIS Extensions\MSDeploy" | Select -last 1).GetValue("InstallPath")
@@ -102,12 +93,15 @@ Push-Location $temporaryLocation
     Write-Output "Publishing $Package to Azure Web Site $siteName"
     Write-Debug "$deployParams"
 
-    & $msdeploy $deployParams | %{ Write-Verbose "$_" }
+    & $msdeploy $deployParams | %{ Write-Output "$_" }
 
 Pop-Location
-Remove-Item -Recurse -Force -Path $temporaryLocation
+
+if (-not $debug) {
+    # Clean up, remove the temporary working directory
+    Remove-Item -Path $temporaryLocation -Recurse -Force | Out-Null
+}
 
 if ($Launch) {
     Show-AzureWebsite -Name $sitename 
 }
-Write-Host "SUCCESS: Deployed Web Site" -ForegroundColor Green
