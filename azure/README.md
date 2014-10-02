@@ -49,6 +49,8 @@ Deploy the package you have just created to Azure using Web Deploy. If you do no
 
 #### Submit the update to Azure Gallery
 
+Azure is currently in the process of launching a new default management portal (portal.azure.com), which makes better use of screenshots, logos and other metadata. Please use up-to-date and official images, as found on ghost.com and [adhere to the guidelines](https://ghost.org/about/logos/).
+
 As this is an update to the existing package on Azure, you need to reach out to the previous submitters of the package to ask them to submit an update on your behalf or ask for co-ownership.
 
 ## References
