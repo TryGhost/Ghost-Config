@@ -6,7 +6,7 @@ There is a table displaying a list of Ghost versions, their release data and the
 
 | DB Version | Introduced In |
 |-----------:|--------------:|
-| 003 | 0.5.0 |
+| 003 | [0.5.0](0.5.0) |
 | 002 | [0.4.1](0.4.1) |
 | 001 | [0.4.0](0.4.0) |
 | 000 | [0.3.0](0.3.0) |
