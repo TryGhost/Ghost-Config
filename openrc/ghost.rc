@@ -1,0 +1,63 @@
+#!/sbin/openrc-run
+# OpenRC config file for Ghost 0.11.7
+# author: "Chris T.R." chris.trr@gmail.com
+# 
+
+ghost_instance="ghost-instance-system-name"
+ghost_instance_name="Instance Name"
+environment="production"
+
+description="Ghost blogging platform -- $ghost_instance_name instance"
+extra_started_commands=""
+extra_stopped_commands=""
+
+ghost_root="/var/www/ghost-$ghost_instance"
+pidfile="$ghost_root/ghost-$ghost_instance.pid"
+command=/usr/bin/node
+ghost_group=ghost
+ghost_user=ghost
+cfgfile="$ghost_root/config.js"
+idxfile="$ghost_root/index.js"
+command_args="$idxfile"
+
+# Ensure that the instance directory exists
+required_dirs="$ghost_root"
+# Ensure that the Ghost instance has been initialized with
+#  'npm install --production' under $ghost_root.
+required_files="$cfgfile $idxfile"
+
+depend() {
+   need net nginx
+   use logger
+   #want
+   #before
+   #after
+   #provide
+   #keyword
+}
+
+start_pre()
+{
+   # Ensure that our dirs are correct
+   checkpath --directory --owner $ghost_user:$ghost_group --mode 0755 $ghost_root
+   
+}
+
+start() {
+   ebegin "Starting $description"
+   start-stop-daemon --start \
+      --user $ghost_user --group $ghost_group \
+      --chdir $ghost_root \
+      --make-pidfile --pidfile $pidfile \
+      --background \
+      --exec env NODE_ENV=$environment $command -- $command_args > /dev/null
+   eend $?
+}
+
+stop() {
+   ebegin "Stopping $description"
+   start-stop-daemon --stop \
+      --pidfile $pidfile \
+      --exec $command
+   eend $?
+}
